@@ -1,0 +1,84 @@
+START
+signaturePrice <- 2
+trackingPrice <- 5
+REPEAT
+valid <- TRUE
+OUTPUT "Enter the customer's name"
+INPUT name
+OUTPUT "Enter the customer's address"
+INPUT address
+OUTPUT "Enter the customer's phone number"
+INPUT phone
+IF name = "" OR address = "" THEN
+OUTPUT "The name and address cannot be left blank"
+valid <- FALSE
+ELSE IF phone is not all numbers OR LENGTH(phone) <> 11 THEN
+OUTPUT "The phone number must be 11 numbers long"
+valid <- FALSE
+END IF
+UNTIL valid = TRUE
+REPEAT
+valid <- TRUE
+OUTPUT "How many parcels are being collected (1 to 6)"
+INPUT numberOfParcels
+IF numberOfParcels is not a whole number THEN
+OUTPUT "Please enter a whole number"
+valid <- FALSE
+ELSE IF numberOfParcels < 1 OR numberOfParcels > 6 THEN
+OUTPUT "The number of parcels must be between 1 and 6"
+valid <- FALSE
+END IF
+UNTIL valid = TRUE
+totalCost <- 0
+receipt <- empty list
+parcel <- 1
+WHILE parcel <= numberOfParcels
+OUTPUT "Parcel ", parcel
+INPUT height, length, width, weight
+IF any of them are not numbers THEN
+OUTPUT "Please enter numbers only, the height, length and width must be whole numbers"
+ELSE IF height <= 0 OR length <= 0 OR width <= 0 OR weight <= 0 THEN
+OUTPUT "The measurements and weight must be more than 0"
+ELSE
+size <- height + length + width
+IF size > 450 OR weight > 30 THEN
+OUTPUT "Parcel can't be collected, please enter the parcel again"
+ELSE
+IF size > 150 OR weight > 15 THEN
+parcelCost <- 30
+ELSE IF size >= 95 OR weight > 2 THEN
+parcelCost <- 20
+ELSE
+parcelCost <- 5
+END IF
+ADD parcel number, size, weight and parcelCost TO receipt
+REPEAT
+OUTPUT "Do you want signature on delivery for £2? (Y/N)"
+INPUT signature
+UNTIL signature = "Y" OR signature = "N"
+IF signature = "Y" THEN
+parcelCost <- parcelCost + signaturePrice
+ADD "Signature on delivery - £2.00" TO receipt
+END IF
+REPEAT
+OUTPUT "Do you want parcel tracking for £5? (Y/N)"
+INPUT tracking
+UNTIL tracking = "Y" OR tracking = "N"
+IF tracking = "Y" THEN
+parcelCost <- parcelCost + trackingPrice
+ADD "Parcel tracking - £5.00" TO receipt
+END IF
+ADD parcelCost TO receipt
+totalCost <- totalCost + parcelCost
+parcel <- parcel + 1
+END IF
+END IF
+END WHILE
+OUTPUT "COLLECTION RECEIPT"
+OUTPUT name, address, phone
+OUTPUT "Number of parcels: ", numberOfParcels
+FOR EACH line IN receipt
+OUTPUT line
+END FOR
+OUTPUT "Total cost of collection: £", totalCost
+END
